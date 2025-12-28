@@ -1,0 +1,32 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 171d4999fb5facc429961b9b472aa40c, type: 3}
+  m_Name: EditorData
+  m_EditorClassIdentifier: 
+  objectCategories:
+  - {fileID: 11400000, guid: c1d27bd110ac3b14fad83186d3cde1eb, type: 2}
+  - {fileID: 11400000, guid: cc4a66518e862714c8a897d70ca15c33, type: 2}
+  - {fileID: 11400000, guid: d8d12f74f0ba0d244887ec1866e04a46, type: 2}
+  environments:
+  - {fileID: 11400000, guid: 9664c18d6f945f34cb52e334eb107373, type: 2}
+  - {fileID: 11400000, guid: f79467013612a454eab08f8ebf4b54e1, type: 2}
+  blendingColorUnderWaterTerrainObjectPrefab: {fileID: 2035427948901082224, guid: 1b7253ab72029d64199f8bdcd3095092,
+    type: 3}
+  waterFoamObjectPrefab:
+  - {fileID: 1412636376391095228, guid: 43a7cbd1e05100c4dbe26071b4b6f126, type: 3}
+  - {fileID: 1412636376391095228, guid: 905fed2375045494492dd9899293ebbf, type: 3}
+  - {fileID: 1412636376391095228, guid: b9d69d7c6dad8a84585d60e1323a8959, type: 3}
+  - {fileID: 1412636376391095228, guid: 3b24a3265067f2a46991a273bba9b197, type: 3}
+  backgroundObjectPrefab: {fileID: 1872295872979795325, guid: 0273dfe6b64a53640a1d52f1fe25781c,
+    type: 3}
+  currentEnvironment: 0
+  currentMusic: 0
