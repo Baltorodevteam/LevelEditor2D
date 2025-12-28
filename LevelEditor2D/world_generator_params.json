@@ -1,0 +1,8 @@
+{
+    "nrOfLevels": 10,
+    "levelsSize": 12,
+    "nrOfRoomsAtFirstLevel": 5,
+    "nrOfRoomsAtLastLevel": 20,
+	"startDiff": 0.0,
+	"endDiff": 1.0
+}

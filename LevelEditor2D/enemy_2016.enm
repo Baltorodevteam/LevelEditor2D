@@ -1,0 +1,16 @@
+{
+    "enemyID": 2016,
+    "type": 1,
+    "layerIndex": 1,
+    "layerMask": 2,
+    "timeout": 0,
+    "waveID": 0,
+    "baseHp": 97.55754089355469,
+    "baseDamage": 144.2914581298828,
+    "armor": 0.0,
+    "fireRate": 1.1270109415054322,
+    "range": 5.6707987785339359,
+    "moveSpeed": 5.282257080078125,
+    "areaGridW": 1,
+    "areaGridH": 1
+}

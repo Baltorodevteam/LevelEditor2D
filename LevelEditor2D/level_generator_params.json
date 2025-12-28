@@ -1,0 +1,14 @@
+{
+    "levelWidth": 12,
+    "levelHeight": 12,
+    "minRooms": 5,
+    "maxRooms": 5,
+    "minRoomSize": 0,
+    "maxRoomSize": 2,
+    "algorithmNr": 1,
+    "roomSizePercentTab": [
+        60,
+		20,
+        20
+    ]
+}
