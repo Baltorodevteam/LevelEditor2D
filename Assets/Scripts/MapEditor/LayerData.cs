@@ -1,0 +1,329 @@
+using System.Collections.Generic;
+using UnityEngine;
+
+public class LayerData
+{
+    static public float layerAlt = 0.05f;
+
+    int roomX;
+    int roomY;
+
+    int layerNr;
+    int categoryID = 0;
+    GameObject layerPtr;
+
+    List<BaseGameObject> objectsPtr;
+
+
+    public bool isVisible = true;
+
+
+    public void SetCategoryID(int i)
+    {
+        categoryID = i;
+    }
+
+    public int GetCategoryID()
+    {
+        return categoryID;
+    }
+
+    public GameObject GetLayerPtr()
+    {
+        return layerPtr;
+    }
+
+    public void SetVisibleFlag(bool b)
+    {
+        isVisible = b;
+        layerPtr.SetActive(isVisible);
+    }
+
+    public void UpdateLayerAltitude()
+    {
+        layerPtr.transform.position = new Vector3(layerPtr.transform.position.x, layerPtr.transform.position.y, - layerNr * LayerData.layerAlt);
+    }
+
+    public LayerData()
+    {
+        objectsPtr = new List<BaseGameObject>();
+    }
+
+    public LayerData(int roomX, int roomY, int layerNr)
+    {
+        this.roomX = roomX;
+        this.roomY = roomY;
+        this.layerNr = layerNr;
+
+        objectsPtr = new List<BaseGameObject>();
+        this.layerPtr = Map.Instance.AddLayer(roomX, roomY, layerNr);
+    }
+
+    public void ClearList()
+    {
+        objectsPtr = new List<BaseGameObject>();
+
+        foreach (Transform child in layerPtr.transform)
+        {
+            Object.Destroy(child.gameObject);
+        }
+    }
+
+    public void ClearMe()
+    {
+        ClearList();
+        GameObject.Destroy(layerPtr);
+        layerPtr = null;
+        layerNr = -1;
+    }
+
+    public void SetLayerNr(int i)
+    {
+        layerNr = i;
+
+        for(int j = 0; j < objectsPtr.Count; j++)
+        {
+            objectsPtr[j].SetSortingLayerID(layerNr);
+        }
+    }
+
+    public void EnableColliders(bool v)
+    {
+        for (int j = 0; j < objectsPtr.Count; j++)
+        {
+            objectsPtr[j].EnableCollider(v);
+        }
+    }
+
+    public void UpdateEnvironment(EditorData ed)
+    {
+        for (int j = 0; j < objectsPtr.Count; j++)
+        {
+            objectsPtr[j].UpdateEnvironment(ed);
+        }
+    }
+
+    public List<BaseGameObject> GetObjects() {
+        return objectsPtr;
+	}
+
+    public int GetLayerNr()
+    {
+        return layerNr;
+    }
+
+    public void AddObjectPtr(BaseGameObject g, string fullPrefabName)
+    {
+        objectsPtr.Add(g);
+        g.transform.parent = layerPtr.transform;
+        g.transform.localPosition = new Vector3(g.transform.localPosition.x, g.transform.localPosition.y, 0.0f);
+        g.name = fullPrefabName;
+
+        g.SetSortingLayerID(layerNr);
+        g.UpdateSortingOrder();
+    }
+
+    public BaseGameObject GetObjectPtr(int nIndex)
+    {
+        if(nIndex >= 0 && nIndex < objectsPtr.Count)
+        {
+            return objectsPtr[nIndex];
+        }
+        return null;
+    }
+
+    public int FindObjectPtr(BaseGameObject g)
+    {
+        for (int i = 0; i < objectsPtr.Count; i++)
+        {
+            if (objectsPtr[i] == g)
+            {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    public bool RemoveObjectPtr(BaseGameObject g)
+    {
+        for(int i = 0; i < objectsPtr.Count; i++)
+        {
+            if(objectsPtr[i] == g)
+            {
+                objectsPtr.RemoveAt(i);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public BaseGameObject CheckGrid(int gridX, int gridY)
+    {
+        for(int i = 0; i < objectsPtr.Count; i++)
+        {
+            int xMin = (int)(objectsPtr[i].transform.localPosition.x + 0.1f);
+            int yMin = (int)(objectsPtr[i].transform.localPosition.y + 0.1f);
+            int xMax = xMin + objectsPtr[i].width;
+            int yMax = yMin + objectsPtr[i].height;
+
+            if (gridX >= xMin && gridX < xMax && gridY >= yMin && gridY < yMax)
+            {
+                return objectsPtr[i];
+            }
+        }
+        return null;
+    }
+
+    public BaseGameObject CheckGrid(BaseGameObject bgo, int gridX, int gridY)
+    {
+        for (int i = 0; i < objectsPtr.Count; i++)
+        {
+            if (bgo != objectsPtr[i])
+            {
+                int xMin = (int)(objectsPtr[i].transform.localPosition.x + 0.1f);
+                int yMin = (int)(objectsPtr[i].transform.localPosition.y + 0.1f);
+                int xMax = xMin + objectsPtr[i].width;
+                int yMax = yMin + objectsPtr[i].height;
+
+                ///Debug.Log("Existing object at GridX = " + xMin + "  GridY = " + yMin);
+
+                if (gridX >= xMin && gridX < xMax && gridY >= yMin && gridY < yMax)
+                {
+                    return objectsPtr[i];
+                }
+            }
+        }
+        return null;
+    }
+
+    public int GetObjectsCount()
+    {
+        return objectsPtr.Count;
+    }
+
+    public string GetObjectName(int nIndex)
+    {
+        return objectsPtr[nIndex].name;
+    }
+
+    public void RotateObjectPtr(GameObject g)
+    {
+        Vector3 v = g.transform.localEulerAngles;
+        float nv = v.z;
+        if(Mathf.Abs(nv) < 1)
+        {
+            nv = 90;
+        }
+        else if (Mathf.Abs(nv - 90) < 1)
+        {
+            nv = 180;
+        }
+        else if (Mathf.Abs(nv - 180) < 1)
+        {
+            nv = 270;
+        }
+        else
+        {
+            nv = 0;
+        }
+
+        g.transform.rotation = Quaternion.Euler(0, 0, nv);
+    }
+
+
+/////////////////////////////////////////////////////////////////
+    public void Save(System.IO.BinaryWriter writer)
+    {
+        writer.Write(layerNr);
+        writer.Write(categoryID);
+        writer.Write(objectsPtr.Count);
+        for (int i = 0; i < objectsPtr.Count; i++)
+        {
+            //writer.Write(objectsName[i]);
+            writer.Write(objectsPtr[i].transform.localPosition.x);
+            writer.Write(objectsPtr[i].transform.localPosition.y);
+            writer.Write(objectsPtr[i].transform.localPosition.z);
+            writer.Write(objectsPtr[i].transform.localEulerAngles.z);
+            writer.Write(objectsPtr[i].GetSpriteIndex());
+            writer.Write(objectsPtr[i].GetSpriteRenderer().size.x);
+            writer.Write(objectsPtr[i].GetSpriteRenderer().size.y);
+        }
+    }
+
+    public void Load(System.IO.BinaryReader reader)
+    {
+        layerNr = reader.ReadInt32();
+        categoryID = reader.ReadInt32();
+        int objCount = reader.ReadInt32();
+        for (int i = 0; i < objCount; i++)
+        {
+            string prefabName = reader.ReadString();
+            float x = reader.ReadSingle();
+            float y = reader.ReadSingle();
+            float z = reader.ReadSingle();
+            float angle = reader.ReadSingle();
+            int spriteIndex = reader.ReadInt32();
+            float w = reader.ReadSingle();
+            float h = reader.ReadSingle();
+
+            GameObject prefab = SystemData.Instance.GetEditorData().FindObjectByName(prefabName);
+            if(prefab != null)
+            {
+                GameObject o = GameObject.Instantiate(prefab, new UnityEngine.Vector3(x, y, z), Quaternion.Euler(0, 0, angle), layerPtr.transform) as GameObject;
+                BaseGameObject go = o.GetComponent<BaseGameObject>();
+
+                go.transform.localPosition = new Vector3(x, y, z);
+
+                objectsPtr.Add(go);
+                go.name = prefabName;
+                go.SetSpriteIndex(spriteIndex);
+                go.UpdateEnvironment(SystemData.Instance.GetEditorData());
+                go.SetSize(w, h);
+            }
+        }
+
+        SetLayerNr(layerNr);
+    }
+
+    public void LoadFromJsonLayerSerializer(JsonLayerSerializer ld)
+    {
+        layerNr = ld.layerNr;
+        categoryID = ld.categoryID;
+
+        for (int i = 0; i < ld.objectsList.Count; i++)
+        {
+            string prefabName = ld.objectsList[i].prefabName;
+
+            var prefab = SystemData.Instance.GetEditorData().FindObjectByName(prefabName);
+
+            float x = ld.objectsList[i].x;
+            float y = ld.objectsList[i].y;
+            float z = ld.objectsList[i].z;
+            float angle = 0;// ld.objectsList[i].r;
+            int spriteIndex = ld.objectsList[i].spriteIndex;
+            float w = ld.objectsList[i].w;
+            float h = ld.objectsList[i].h;
+            string d = ld.objectsList[i].data;
+
+            GameObject o = GameObject.Instantiate(prefab, new UnityEngine.Vector3(x, y, z), Quaternion.Euler(0, 0, angle), layerPtr.transform) as GameObject;
+            BaseGameObject go = o.GetComponent<BaseGameObject>();
+
+            go.transform.localPosition = new Vector3(x, y, z);
+
+            objectsPtr.Add(go);
+            go.name = prefabName;
+            go.SetSpriteIndex(spriteIndex);
+            go.UpdateEnvironment(SystemData.Instance.GetEditorData());
+            go.SetSize(w, h);
+
+            go.SetData(d);
+
+            if (ld.objectsList[i].enemyID >= 0)
+            {
+            }
+        }
+
+        SetLayerNr(layerNr);
+    }
+
+}
